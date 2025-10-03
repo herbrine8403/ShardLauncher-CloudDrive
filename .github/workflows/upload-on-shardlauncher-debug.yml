@@ -1,0 +1,19 @@
+name: Upload ShardLauncher Debug ZIP
+
+on:
+  repository_dispatch:
+    types: [shardlauncher_debug_uploaded]
+
+jobs:
+  upload-debug-zip:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download debug ZIP from artifact
+        run: |
+          echo "Downloading ${{ github.event.client_payload.download_url }}"
+          curl -L -o com.lanrhyme.shardlauncher-all-debug.zip "${{ github.event.client_payload.download_url }}"
+
+      - name: Upload to external server
+        run: |
+          response=$(curl -F "file=@com.lanrhyme.shardlauncher-all-debug.zip" https://drwei.dpdns.org/upload.php)
+          echo "Upload response: $response"
